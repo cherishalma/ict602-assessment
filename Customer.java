@@ -11,10 +11,18 @@ public class Customer extends User {
         this.loyaltyPoints = 0;
         this.orderHistory = new ArrayList<>();
     }
-        
+
+    // Get loyalty points
+    public int getLoyaltyPoints() {
+        return this.loyaltyPoints;
+    }
+
     // Add purchase to history
     public void addOrderToHistory(String details, double total) {
         orderHistory.add(details);
+
+        // For every $10 spent, customer earns 1 point
+        this.loyaltyPoints += (int) (total / 10);
     }
 
     public void viewOrderHistory() {

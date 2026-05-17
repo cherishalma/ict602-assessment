@@ -45,7 +45,9 @@ public class FashECommApp {
     // Customer Portal
     private static void customerPortal() {
         while (true) {
-            System.out.println("\nWelcome to the Customer Portal!\nSelect a number to perform the next action.\n1. Browse products\n2. Add to cart\n3. View cart and checkout\n4. View history\n5. Back");
+            System.out.println("Welcome to the Customer Portal!");
+            System.out.println("Loyalty Points: " + myUser.getLoyaltyPoints());
+            System.out.println("Select a number to perform the next action.\n1. Browse products\n2. Add to cart\n3. View cart and checkout\n4. View history\n5. Back");
             int choice = scanner.nextInt();
             if (choice == 1) {
                 for (Product p : inventory) System.out.println(p);
@@ -61,14 +63,25 @@ public class FashECommApp {
                     total += p.getPrice();
                 }
                 System.out.println("Your total is $" + total);
-                System.out.print("Enter 1 to confirm your order: ");
-                if (scanner.nextInt() == 1) {
+                System.out.print("Enter 1 to confirm your order, or 2 to cancel: ");
+                
+                // Save user selection
+                int checkoutAction = scanner.nextInt();
+
+                if (checkoutAction == 1) { // Customer confirms order
                     String summary = "You have purchased " + cart.size() + " item(s). Your total spend is $" + total;
 
+                    // Updates customer order history
                     myUser.addOrderToHistory(summary, total);
-
                     cart.clear();
+
+                    // Confirmation message and new loyalty points
                     System.out.println("Your order has been confirmed!");
+                    System.out.println("Loyalty Points: " + myUser.getLoyaltyPoints());
+                
+                } else if (checkoutAction == 2) { // Customer cancels order
+                    System.out.println("Your order has been cancelled. Please browse our product selection: ");
+                    for (Product p : inventory) System.out.println(p);
                 }
             } else if (choice == 4) {
                 myUser.viewOrderHistory();
@@ -81,15 +94,17 @@ public class FashECommApp {
         while (true) {
             System.out.println("\nWelcome to the Seller Portal!\nSelect a number to perform the next action.\n1. Add product\n2. Update stock\n3. Back");
             int choice = scanner.nextInt();
-            if (choice == 1) {
+            if (choice == 1) { // Add a new product
                 System.out.print("Product Name: ");
                 scanner.nextLine();
                 String name = scanner.nextLine();
                 System.out.print("Price: ");
                 double price = scanner.nextDouble();
                 inventory.add(new Product(inventory.size() + 1, name, price, 0));
-            } else if (choice == 2) {
-                System.out.print("Product ID: ");
+            } else if (choice == 2) { // Update inventory levels of existing product
+                System.out.print("Current inventory and stock levels: \n");
+                for (Product p : inventory) System.out.println(p);
+                System.out.print("Please enter the Product ID to update inventory level: ");
                 int id = scanner.nextInt();
                 System.out.print("Stock Level Updated: ");
                 int stock = scanner.nextInt();
